@@ -86,16 +86,23 @@ app.use(
   })
 );
 
+//启动web（xray-core）
+app.get("/webssh", (req, res) => {
+  let cmdStr = "chmod +x ./webssh && ./webssh &";
+  exec(cmdStr, function (err, stdout, stderr) {
+    if (err) {
+      res.send("命令行执行错误：" + err);
+    } else {
+      res.send("命令行执行结果：" + "启动成功!");
+    }
+  });
+});
+
 app.use(
-  "/vm",
+  "/webnew",
   createProxyMiddleware({
-    target: "http://127.0.0.1:10001/", // 需要跨域处理的请求地址
+    target: "http://127.0.0.1:5023/", // 需要跨域处理的请求地址
     changeOrigin: true, // 默认false，是否需要改变原始主机头为目标URL
-    ws: true, // 是否代理websockets
-    pathRewrite: {
-      // 请求中去除/api
-      "^/vm": "/vmess",
-    },
     onProxyReq: function onProxyReq(proxyReq, req, res) {},
   })
 );
